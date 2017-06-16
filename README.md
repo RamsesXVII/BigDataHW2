@@ -2,16 +2,20 @@
 
 [![N|Solid](https://www-static.ripe.net/static/rnd-ui/atlas/media/anchors/RIPE_NCC_Logo2015-256_q3prZmW.png)](https://atlas.ripe.net/)
 ### Dati
-Per le analisi batch i dati fanno riferimento alle Anchoring Measurement running il 13 Giugno 2017. Il retrieve dei dati avviene tramite uno script che effettua un download di tutte le misurazioni specificate  nel file in input, aggiungendo i nuovi record in coda ad un file.
-Le richieste sono nella forma:
+Data used in batch analysis are anchoring measurements traceroutes running on the 13th of June in 2017. 
+Traceroute records are obtained by a script that downloads  measurements specified in input file, adding new records on tail of output file.
+Requests are structured as  follows:
+
 > https://atlas.ripe.net/api/v2/measurements/"+id+"/results?start=1497312000&stop=1497398399&format=txt
 
 ### Task 1
-Distribuzione del numero di hop
+Distribution of hop counts.
 
 ### Task 2
-Individuazione di anomalie nella sequenza di rtt
+Detection of anomalies in rtt
 
 ### ToDo
-Estendere ricerca anche su Built-In e UDM. Verificare che lo script scriva su file gli id dellle misurazioni effettivamente running (serve una lista degli id presenti, potrebbbe bastare  un grep con conta>0 per ciascun id nel file in input).
-d>
+  - Extend the input on Built-In and UDM. 
+  - Check that ids in idFile.txt correspond to measurement running (grep is enough?)
+  - Magic
+
