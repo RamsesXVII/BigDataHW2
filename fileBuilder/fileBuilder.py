@@ -1,12 +1,12 @@
 import requests
 
-with open("idsList(ipv4 o ipv6)") as f: 
+with open("ipv4Ids") as f: 
     content = f.readlines()
 
 ids = [x.strip() for x in content] 
 
-out_file = open("recordDownload","w") #
-out_fileIdsMeasurement = open("IdsList","w")#dovrebbe tenere  conto di quelli che effettivamente hannofatto un download
+out_file = open("../resources/recordDownload.json","w") #
+out_fileIdsMeasurement = open("../resources/IdsList","w")#dovrebbe tenere  conto di quelli che effettivamente hannofatto un download
 
 
 for id in ids:
