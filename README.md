@@ -14,6 +14,33 @@ Distribution of hop counts.
 ### Task 2
 Detection of anomalies in rtt
 
+### Spark Streaming
+  - SEGUIRE LA GUIDA NUMERO 1 PER MODIFICARE LE IMPOSTAZIONI IN .PROPERTIES
+  - AVVIARE ZOOKEPER 
+  
+```sh
+$ bin/zookeeper-server-start.sh config/zookeeper.properties 
+```
+  - AVVIARE KAFKA
+```sh
+$ bin/kafka-server-start.sh config/server.properties 
+```
+  - AVVIARE IL CONSUMER
+```sh
+$  ./spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 /home/iori/Desktop/consumer.py localhost:2181 new_topic 
+```
+  - POSTARE UN MESSAGGIO DA RIGA DI COMANDO
+```sh
+$   echo "ciao bello" | ./kafka-console-producer.sh --broker-list localhost:9092 --topic new_topic
+```
+
+### Tutorial
+
+https://kafka.apache.org/quickstart
+https://medium.com/@kass09/spark-streaming-kafka-in-python-a-test-on-local-machine-edd47814746 (l'ultima parte è importante e non l'ho letta)
+
+
+
 ### ToDo
   - Extend the input on Built-In and UDM. 
   - Check that ids in idFile.txt correspond to measurement running (grep is enough?)
