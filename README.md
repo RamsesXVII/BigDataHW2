@@ -15,21 +15,21 @@ Distribution of hop counts.
 Detection of anomalies in rtt
 
 ### Spark Streaming
-  - SEGUIRE LA GUIDA NUMERO 1 PER MODIFICARE LE IMPOSTAZIONI IN .PROPERTIES
-  - AVVIARE ZOOKEPER 
+  - Seguire la guida numero 1 dei tutorial per modificare le proprietà
+  - Avviare Zookeeper
   
 ```sh
 $ bin/zookeeper-server-start.sh config/zookeeper.properties 
 ```
-  - AVVIARE KAFKA
+  - Avviare Kafka
 ```sh
 $ bin/kafka-server-start.sh config/server.properties 
 ```
-  - AVVIARE IL CONSUMER
+  - Avviare il consumer
 ```sh
 $  ./spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 /home/iori/Desktop/consumer.py localhost:2181 new_topic 
 ```
-  - POSTARE UN MESSAGGIO DA RIGA DI COMANDO
+  - Postare un messaggio da riga di comando
 ```sh
 $   echo "ciao bello" | ./kafka-console-producer.sh --broker-list localhost:9092 --topic new_topic
 ```
