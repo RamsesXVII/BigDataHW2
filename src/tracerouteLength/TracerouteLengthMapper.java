@@ -20,7 +20,8 @@ public void map(LongWritable key, Text value, Context context)
 	JSONObject obj = new JSONObject(value.toString());
 	
 	JSONArray hopList= obj.getJSONArray("result");
-	IntWritable hopLength = new IntWritable(hopList.length());
+	int finalHop = hopList.getJSONObject(hopList.length()-1).getInt("hop");
+	IntWritable hopLength = new IntWritable(finalHop);
 	
 	context.write(hopLength, one);
 	}

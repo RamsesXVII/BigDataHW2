@@ -14,6 +14,7 @@ public class BigRTT {
 	public static void main(String[] args) throws Exception {
 
 		JobConf conf = new JobConf();
+		conf.set("mapred.textoutputformat.separator", ",");
 		FileInputFormat.addInputPath(conf, new Path(args[0]));
 		FileOutputFormat.setOutputPath(conf, new Path(args[1]));
 		

@@ -26,14 +26,17 @@ Reducer<Text, Traceroute, Text, Text> {
 		Collections.sort(hopList);
 		
 		for(int i=1; i < hopList.size() -1; i++){
+			
 			Traceroute central = hopList.get(i);
 			Traceroute prev = hopList.get(i-1);
 			Traceroute next = hopList.get(i+1);
+			
 			if ((central.getRtt() > prev.getRtt()) && (central.getRtt() > next.getRtt())){
-				String result = "[" + prev.toString() + "," + central.toString() + "," + next.toString() + "]";
+				
+				String result = "," + prev.toString() + "," + central.toString() + "," + next.toString();
 				double delta = central.getRtt() - next.getRtt();
 				if (delta > 0.5) {
-					String tracerouteKey = key.toString() + "-" + delta;
+					String tracerouteKey = key.toString() + "," + delta;
 					context.write(new Text(tracerouteKey), new Text(result));
 				}
 			}

@@ -47,7 +47,7 @@ public class Traceroute implements WritableComparable<Traceroute>{
 
 	@Override
 	public String toString() {
-		return "[hop=" + hop + ", from=" + from + ", rtt=" + rtt + "]";
+		return hop + "," + from + "," + rtt;
 	}
 
 	@Override
