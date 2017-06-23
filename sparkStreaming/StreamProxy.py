@@ -23,14 +23,8 @@ class StreamProxy:
 		# Bind function we want to run with every result message received
 		atlas_stream.bind_channel(channel, self.on_result_response)
 		# Subscribe to new stream for 1001 measurement results
-		stream_parameters = {"msm": 1001}
+		stream_parameters = {"type": "traceroute"}
 		atlas_stream.start_stream(stream_type="result", **stream_parameters)
-
-		# Probe's connection status results
-		channel = "atlas_probestatus"
-		atlas_stream.bind_channel(channel, self.on_result_response)
-		stream_parameters = {"enrichProbes": True}
-		atlas_stream.start_stream(stream_type="probestatus", **stream_parameters)
 
 		# Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.
 		# Make sure you have this line after you start *all* your streams

@@ -1,6 +1,6 @@
 from kafka import KafkaClient, SimpleProducer, SimpleConsumer
 
-
+#Eventualmente aggiungere funzione adaptData per pulire i dati
 class KafkaPublisher:
 	
 	def __init__(self,address,port,topic):
@@ -11,9 +11,5 @@ class KafkaPublisher:
 
 
 	def pushMessage(self,message):
-		"""
-		Function that will be called every time we receive a new result.
-		Args is a tuple, so you should use args[0] to access the real message.
-		"""
 		self.producer.send_messages(self.topic, message)
 		self.producer = SimpleProducer(self.kafka, async=True)
