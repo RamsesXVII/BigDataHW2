@@ -11,6 +11,7 @@ class StreamProxy:
 
 
 	def on_result_response(self,*args):
+		print(str(args[0]))
 		self.kafkaPublisher.pushMessage(str(args[0]))
 
 
@@ -23,7 +24,7 @@ class StreamProxy:
 		# Bind function we want to run with every result message received
 		atlas_stream.bind_channel(channel, self.on_result_response)
 		# Subscribe to new stream for 1001 measurement results
-		stream_parameters = {"type": "traceroute"}
+		stream_parameters = {"type": "traceroute", "buffering": True}
 		atlas_stream.start_stream(stream_type="result", **stream_parameters)
 
 		# Timeout all subscriptions after 5 secs. Leave seconds empty for no timeout.
