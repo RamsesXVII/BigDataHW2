@@ -40,7 +40,7 @@ public class Traceroute implements WritableComparable<Traceroute>{
 
 	@Override
 	public String toString() {
-		return ";;;;;;;;;;;;;;" + from + "," + timeStamp;
+		return from + "," + timeStamp;
 	}
 
 	@Override

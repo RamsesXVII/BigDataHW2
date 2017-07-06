@@ -23,7 +23,7 @@ public class Stability {
 		
 		job.setMapperClass(StabilityMapper.class);
 		job.setReducerClass(StabilityReducer.class);
-
+		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Traceroute.class);
 		job.setOutputKeyClass(Text.class);
@@ -33,8 +33,5 @@ public class Stability {
 		job.waitForCompletion(true);
 		long end = Instant.now().toEpochMilli();
 		System.out.println(end - start);
-		
-		//TO DO 
-		// job.setSortComparatorClass(DescendingIntComparable.class);
 	}
 }
