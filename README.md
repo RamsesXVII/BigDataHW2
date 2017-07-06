@@ -33,6 +33,10 @@ $  ./spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1
 ```sh
 $   echo "ciao bello" | ./kafka-console-producer.sh --broker-list localhost:9092 --topic new_topic
 ```
+ - Avviare un job
+```sh
+$  ./spark-submit --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 /path/to/job.py localhost:2181 task1 /path/to/output/result 
+```
 
 ### Tutorial
 
