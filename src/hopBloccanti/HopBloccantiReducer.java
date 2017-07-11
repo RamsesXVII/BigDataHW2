@@ -1,26 +1,30 @@
-package destinationUnreachable;
+package hopBloccanti;
 
 
 import java.io.IOException;
+import java.util.HashSet;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-public class DestinationUnreachableReducer extends
-Reducer<Text, IntWritable, Text, IntWritable> {
+public class HopBloccantiReducer extends
+Reducer<Text, Text, Text, Text> {
 
 	@Override
-	public void reduce(Text key, Iterable<IntWritable> values, Context context)
+	public void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
 
 		int sum = 0;
+		HashSet<String> measuraments = new HashSet<>();
 
-		for (IntWritable value : values) {
-			sum += value.get();
+		for (Text value : values) {
+			sum ++;
+			String temp = value.toString();
+			measuraments.add(temp);
 		}
-
-		context.write(key, new IntWritable(sum));
+		
+		String result = sum + "," + measuraments.size();
+		context.write(key, new Text(result));
 	}
 }
 

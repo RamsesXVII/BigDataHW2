@@ -1,5 +1,5 @@
 from StreamProxy import StreamProxy
 
 
-streamProxy=StreamProxy("localhost",9092,"task1")
-streamProxy.getStreaming(20)  #seconds of streaming
+streamProxy=StreamProxy("localhost",9092,"tasks")
+streamProxy.getStreaming(60)  #seconds of streaming

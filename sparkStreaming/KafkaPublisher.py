@@ -12,4 +12,4 @@ class KafkaPublisher:
 
 	def pushMessage(self,message):
 		self.producer.send_messages(self.topic, message)
-		self.producer = SimpleProducer(self.kafka, async=True)
+		#self.producer = SimpleProducer(self.kafka, async=True)
