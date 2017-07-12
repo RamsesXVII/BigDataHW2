@@ -13,31 +13,27 @@ def updateTotalCount(currentCount, countState):
     
 def getIp(trace):
     hopList = trace["result"]
-    resultList = []
-    ipCount = 0
     for i in range(0,len(hopList)):
         singleHop = hopList[i]
         if "result" in singleHop:
             icmpList = singleHop["result"]
             for y in range(0,len(icmpList)):
                 if "from" in icmpList[y]:
-                    ipCount += 1
-                    resultList.append((icmpList[y]["from"], 1))
-    resultList.append(("total", ipCount))
-    return resultList
+                    return (icmpList[y]["from"], 1)
+    return ("x", 1)
 
 
 if __name__ == "__main__":
-    sc = SparkContext(appName="TracerouteLength")
+    sc = SparkContext(appName="ipCountv4")
     ssc = StreamingContext(sc, 10) # 10 second window 
     ssc.checkpoint("/tmp")
 
 
     broker, topic, path = sys.argv[1:]
-    kvs = KafkaUtils.createStream(ssc, broker, "TracerouteLengthTask",{topic:1}) 
+    kvs = KafkaUtils.createStream(ssc, broker, "ipCountv4",{topic:1}) 
 
 
-    lines = kvs.map(lambda x: ast.literal_eval(x[1])).filter(lambda x: x["af"] == 4).flatMap(lambda trace: getIp(trace)).reduceByKey(lambda a,b: a+b)
+    lines = kvs.map(lambda x: ast.literal_eval(x[1])).filter(lambda x: x["af"] == 4).map(lambda trace: getIp(trace)).filter(lambda (x,y): x != "x").reduceByKey(lambda a,b: a+b)
     
     # update total count for each key
     totalCounts = lines.updateStateByKey(updateTotalCount)

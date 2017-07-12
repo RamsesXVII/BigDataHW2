@@ -24,6 +24,8 @@ public class HopBloccanti {
 		
 		job.setMapperClass(HopBloccantiMapper.class);
 		job.setReducerClass(HopBloccantiReducer.class);
+		
+		job.setNumReduceTasks(3);
 
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);

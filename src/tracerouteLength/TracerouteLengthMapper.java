@@ -18,18 +18,19 @@ Mapper<LongWritable, Text, IntWritable, IntWritable> {
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
 
-		JSONObject obj = new JSONObject(value.toString());
+		if (value.getLength() != 0){
+			JSONObject obj = new JSONObject(value.toString());
+			JSONArray hopList= obj.getJSONArray("result");
+			JSONObject lastHop = hopList.getJSONObject(hopList.length()-1);
 
-		JSONArray hopList= obj.getJSONArray("result");
-		JSONObject lastHop = hopList.getJSONObject(hopList.length()-1);
+			if (!(lastHop.has("hop")))
+				context.write(zero, zero);
+			else {
+				int finalHop = lastHop.getInt("hop");
+				IntWritable hopLength = new IntWritable(finalHop);
 
-		if (!(lastHop.has("hop")))
-			context.write(zero, zero);
-		else {
-			int finalHop = lastHop.getInt("hop");
-			IntWritable hopLength = new IntWritable(finalHop);
-
-			context.write(hopLength, one);
+				context.write(hopLength, one);
+			}
 		}
 	}
 }

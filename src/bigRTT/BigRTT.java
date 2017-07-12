@@ -23,6 +23,8 @@ public class BigRTT {
 		
 		job.setMapperClass(BigRTTMapper.class);
 		job.setReducerClass(BigRTTReducer.class);
+		
+		job.setNumReduceTasks(3);
 
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Traceroute.class);

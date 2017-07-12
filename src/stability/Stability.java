@@ -24,6 +24,8 @@ public class Stability {
 		job.setMapperClass(StabilityMapper.class);
 		job.setReducerClass(StabilityReducer.class);
 		
+		job.setNumReduceTasks(3);
+		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Traceroute.class);
 		job.setOutputKeyClass(Text.class);

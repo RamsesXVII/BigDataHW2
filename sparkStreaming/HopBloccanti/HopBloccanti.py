@@ -6,14 +6,12 @@ from pyspark.streaming import StreamingContext
 from pyspark.streaming.kafka import KafkaUtils
 
 def updateTotalCount(currentCount, countState):
-    
-    if len(currentCount) != 0:
-        totCurrent = currentCount[0][0]
-        uniqCurrent = currentCount[0][1]
-    else:
-        totCurrent = 0
-        uniqCurrent = 0
+    totCurrent = 0
+    uniqCurrent = 0
 
+    for i in range(0, len(currentCount)):
+        totCurrent += currentCount[i][0]
+        uniqCurrent += currentCount[i][1]
     if countState is None:
         totState = 0
         uniqState = 0

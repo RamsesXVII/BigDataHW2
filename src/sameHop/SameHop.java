@@ -25,6 +25,8 @@ public class SameHop {
 		job.setMapperClass(SameHopMapper.class);
 		job.setReducerClass(SameHopReducer.class);
 
+		job.setNumReduceTasks(3);
+		
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
