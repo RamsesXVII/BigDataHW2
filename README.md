@@ -35,7 +35,7 @@ $   echo "ciao bello" | ./kafka-console-producer.sh --broker-list localhost:9092
 ```
  - Avviare un job
 ```sh
-$  ./spark-submit --py-files /other/class/path --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 /path/to/job.py localhost:2181 task1 /path/to/output/result 
+$  ./spark-submit --py-files /other/class/path --packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.1.1 /path/to/job.py localhost:2181 tasks /path/to/output/result 
 ```
 
 ### Tutorial
