@@ -2,6 +2,8 @@ package sameHop;
 
 import org.json.*;
 
+import jsonUtility.JsonUtility;
+
 import java.io.IOException;
 import java.util.HashSet;
 
@@ -12,10 +14,12 @@ import org.apache.hadoop.mapreduce.Mapper;
 public class SameHopMapper extends
 Mapper<LongWritable, Text, Text, Text> {
 
+	private JsonUtility jut = new JsonUtility();
+	
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
 
-		if (value.getLength()!=0){
+		if (jut.isJSONValid(value.toString())){
 			JSONObject obj = new JSONObject(value.toString());
 
 			String destination = obj.getString("dst_addr");

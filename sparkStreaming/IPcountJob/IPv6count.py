@@ -12,20 +12,24 @@ def updateTotalCount(currentCount, countState):
     return sum(currentCount, countState)
     
 def getIp(trace):
+
     hopList = trace["result"]
+    resultList = []
+
     for i in range(0,len(hopList)):
         singleHop = hopList[i]
         if "result" in singleHop:
             icmpList = singleHop["result"]
             for y in range(0,len(icmpList)):
                 if "from" in icmpList[y]:
-                    return (icmpList[y]["from"], 1)
-    return ("x", 1)
+                    resulList.append(icmpList[y]["from"], 1)
+    return resulList
+
 
 
 if __name__ == "__main__":
     sc = SparkContext(appName="ipCountv6")
-    ssc = StreamingContext(sc, 10) # 10 second window 
+    ssc = StreamingContext(sc, 30) # 10 second window 
     ssc.checkpoint("/tmp")
 
 
@@ -33,7 +37,7 @@ if __name__ == "__main__":
     kvs = KafkaUtils.createStream(ssc, broker, "ipCountv6",{topic:1}) 
 
 
-    lines = kvs.map(lambda x: ast.literal_eval(x[1])).filter(lambda x: x["af"] == 6).map(lambda trace: getIp(trace)).filter(lambda (x,y): x != "x").reduceByKey(lambda a,b: a+b)
+    lines = kvs.map(lambda x: ast.literal_eval(x[1])).filter(lambda x: x["af"] == 6).flatMap(lambda trace: getIp(trace)).reduceByKey(lambda a,b: a+b)
     
     # update total count for each key
     totalCounts = lines.updateStateByKey(updateTotalCount)
@@ -44,3 +48,4 @@ if __name__ == "__main__":
 
     ssc.start()
     ssc.awaitTermination()
+
