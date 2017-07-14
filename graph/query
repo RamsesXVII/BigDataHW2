@@ -8,3 +8,9 @@ Degree's centrality
  return n.ipAddress, count(r) as DegreeScore  
  order by DegreeScore desc  
  limit 100;  
+
+Degree in/out>2
+
+MATCH (n)
+WHERE size((n)-->()) > 2 AND size((n)<--()) > 2
+RETURN count(n)
