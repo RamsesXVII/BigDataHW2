@@ -3,8 +3,8 @@ import time
 from neo4j.v1 import GraphDatabase, basic_auth
 '''Genera due file csv, il primo, "ipAddressesGlobal.csv" è del tipo id, indirizzo ip e contiene 
 la lista degli indirizzi ip univoci incontrati, il secondo "ipPairsGlobal.csv" è del tipo ipPrev,ipNext 
-e coniente la lista degli archi univoci incontrati. L'input richiesto è un file che per ogni riga contiene un
-record ottenuto tramite cousteau. NB: sono esclusi dalle operazioni gli asterischi e gli hop che compaiono con diversi 
+e coniente la lista degli archi univoci incontrati. L'input richiesto è un file che viene generato dallo script StreamUtility.py.
+NB: sono esclusi dalle operazioni gli asterischi e gli hop che compaiono con diversi 
 ip associati.'''
 
 
