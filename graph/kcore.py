@@ -8,7 +8,7 @@ while True:
     queryToDelete="match (n:ipNode)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 detach delete (n)"
     session.run(queryToDelete)
 
-    queryToDeleteONode="match(n) where not (n)-[]->() detach delete n"
+    queryToDeleteONode="match(n) where not (n)-[]-() delete n"
     session.run(queryToDeleteONode)
 
     queryToCount="match (n:ipNode)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 return count(n) as count"

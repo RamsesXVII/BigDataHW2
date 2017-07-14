@@ -1,0 +1,3 @@
+CREATE INDEX ON :ipNode(ipAddress)
+load csv from "http://localhost:7000/ipAddressesGlobal.csv" as csvline create (n:ipNode{ipAddress:csvline[1]})
+using periodic commit 1000 load csv from 'http://localhost:7000/ipPairsGlobal.csv' as line match(n:ipNode{ipAddress : line[0]}) match(m:ipNode{ipAddress : line[1]}) merge (n)-[]->(m)
