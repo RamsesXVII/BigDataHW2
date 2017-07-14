@@ -26,7 +26,7 @@ public class TracerouteLength {
 		job.setCombinerClass(TracerouteLengthReducer.class);
 		job.setReducerClass(TracerouteLengthReducer.class);
 		
-		job.setNumReduceTasks(3);
+		//job.setNumReduceTasks(3);
 
 		job.setMapOutputKeyClass(IntWritable.class);
 		job.setMapOutputValueClass(IntWritable.class);
