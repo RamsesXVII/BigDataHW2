@@ -1,0 +1,234 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%% asme2ej.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template for producing ASME-format journal articles using LaTeX    %
+% Written by   Harry H. Cheng, Professor and Director                %
+%              Integration Engineering Laboratory                    %
+%              Department of Mechanical and Aeronautical Engineering %
+%              University of California                              %
+%              Davis, CA 95616                                       %
+%              Tel: (530) 752-5020 (office)                          %
+%                   (530) 752-1028 (lab)                             %
+%              Fax: (530) 752-4158                                   %
+%              Email: hhcheng@ucdavis.edu                            %
+%              WWW:   http://iel.ucdavis.edu/people/cheng.html       %
+%              May 7, 1994                                           %
+% Modified: February 16, 2001 by Harry H. Cheng                      %
+% Modified: January  01, 2003 by Geoffrey R. Shiflett                %
+% Use at your own risk, send complaints to /dev/null                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% use twocolumn and 10pt options with the asme2ej format
+\documentclass[twocolumn,10pt]{asme2ej}
+\usepackage{listings}    
+\usepackage{epsfig} %% for loading postscript figures
+\usepackage[T1]{fontenc}
+\usepackage{lipsum}% http://ctan.org/pkg/lipsum
+\usepackage{graphicx}% http://ctan.org/pkg/graphicx
+\usepackage{booktabs} % For formal tables
+\usepackage{epstopdf}
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage{graphicx} 
+\usepackage[normalem]{ulem}
+\usepackage{vmargin}
+% ....
+
+
+%% The class has several options
+%  onecolumn/twocolumn - format for one or two columns per page
+%  10pt/11pt/12pt - use 10, 11, or 12 point font
+%  oneside/twoside - format for oneside/twosided printing
+%  final/draft - format for final/draft copy
+%  cleanfoot - take out copyright info in footer leave page number
+%  cleanhead - take out the conference banner on the title page
+%  titlepage/notitlepage - put in titlepage or leave out titlepage
+%  
+%% The default is oneside, onecolumn, 10pt, final
+
+
+\title{Implementazione di Lector usando YAGO come KG di riferimento}
+
+%%% second author
+%%% remove the following entry for single author papers
+%%% add more entries for additional authors
+\author{Mattia Iodice
+    \affiliation{ 
+        Email: mat.iodice1@stud.uniroma3.it
+    }
+}
+
+
+%%% second author
+%%% remove the following entry for single author papers
+%%% add more entries for additional authors
+\author{Mattia Iodice
+    \affiliation{ 
+        Email: mat.iodice1@stud.uniroma3.it
+    }
+}
+
+%%% second author
+%%% remove the following entry for single author papers
+%%% add more entries for additional authors
+\author{Mattia Iodice
+    \affiliation{ 
+        Email: mat.iodice1@stud.uniroma3.it
+    }
+}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{blue},       % keyword style
+  language=Octave,                 % the language of the code
+  morekeywords={*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+
+\begin{document}
+
+\maketitle    
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+{\it  Nella relazione  viene presentata una serie di analisi svolte sui dati pubblici RIPE Atlas. In particolare, sono mostrate sia analisi batch che streaming, sfruttando alcune tra le principali tecnologie disponibili: Spark Streaming, Apache Kafka, Neo4j, Spark, Hive e Redis. Il documento \'e strutturato in sezioni, ciascuna focalizzata su un task diverso e correlata da una discussione ad alto livello della relativa implementazione. Viene inoltre fornito, dove possibile, un confronto dei tempi di esecuzione per le diverse tecnologie. Su cluster la configurazione scelta \'e, mentre il locale  }
+\end{abstract}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{RIPE ATLAS}
+
+I database pubblici relativi alle misurazioni della topologia della rete su larga scala sono utilizzati per diversi scopi: dall'analisi dello stato della rete in real-time all'outage detection, passando per lo studio dell'evoluzione di Internet.\\ Molte delle dinamiche di routing non sono state ancora pienamente comprese e proprio per questo motivo tali database sono popolari sia in contesti accademici che operativi.\\ RIPE Atlas  \'e la pi\'u grande infrastruttura hardware disponibile e consiste in circa 9000 probe distribuite in tutto il Mondo, in grado di effettuare comandi ping, traceroute, SSL/TLS, DNS, NTP and HTTP verso target selezionati. \\Il risultato dei comandi \'e disponibile gratuitamente, e viene fornita anche un'API per l'accesso ai dati in tempo reale.\\
+Alcuni dati relativi alla copertura ATLAS:\footnote{Dati relativi al 14 Luglio 2017}:
+\begin{enumerate}
+\item 9860 probe connesse
+\item 271 ancore connesse\footnote{Un'ancora \'e essenzialmente una probe con maggiore potenza di calcolo, posizionata in un datacenter o in luogo d'interesse.}
+\item 16704 misurazioni attive
+\item 4950 risultati/secondi
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure} 
+\centerline{\psfig{figure=figure/yago-graph.png,width=3.04in}}
+\caption{Distribuzione delle sonde ATLAS.}
+\label{fig_example11.ps}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Le analisi effettuate e presentate fanno riferimento ai dati relativi ai traceroute ipV4, sia a livello batch che streaming. Gli obiettivi prefissati fanno riferimento per lo pi\'u  alla \textbf{caratterizzazione della rete} coperta dall'infrastruttura ATLAS, alla \textbf{ricerca  di anomalie} e alla definizione di possibili approcci per il \textbf{troubleshooting}. 
+Il documento \'e quindi diviso in Sezioni, ciascuna relativa a uno dei 3 aspetti appena descritti.
+Per la parte di caratterizzazione della rete si\'e effettuata un'indagine su alcune caratteristiche fondamentali e strutturali di Internet dedotte, ad esempio, dalla sequenza di hop di ciascun traceroute. \\ Nello studiare le anomalie della rete si sono invece ricercate irregolarit\'a nelle sequenze temporali associate a ciascun traceroute, analizzando inoltre incongruenze nella presenza degli indirizzi ip associati a ciascun hop. La parte finale del lavoro ha  visto la definizione di una tecnica potenzialmente utile al troubleshooting in presenza di outage e validata sul blockout di Amsterdam di Gennaio 2015. \\L'elenco completo dei task \'e il seguente:
+\begin{enumerate}
+\item Qual \'e la distribuzione della lunghezza dei traceroute?
+\item Qual \'e l'evoluzione della quantit\'a di indirizzi ip univoci conosciuti?
+\item Quante volte si verificano anomalie nelle sequenze di RTT? 
+\item Quante volte si verificano anomalie nelle sequenze di ICMP echo replies?
+\item Com' \'e strutturata l'instabilit\'a della rete?
+\item Come identificare anomalie della rete?
+\item Quanti stati diversi ci sono tra una coppia di nodi ?
+\item Come \'e strutturato il grafo di Internet? 
+
+\end{enumerate}
+
+Per ciascuno dei task  si \'e innanzitutto realizzata un'implementazione su Hadoop per identificare il processamento pi\'u opportuno dei dati. Come strumento di supporto, dove \'e necessario, si \'e fatto uso di Redis. Per questo, nella sezione finale, viene presentata un'analisi dei tempi d'esecuzione richiesti per le principali operazioni richieste.
+
+\section{Architetttura di riferimento per le analisi streaming}
+
+L'API fornita per l'accesso allo streaming \'e Cousteau\footnote{https://github.com/RIPE-NCC/ripe-atlas-cousteau}. Tramite essa \'e quindi possibile specificare le misurazioni di interesse e ricevere i relativi risultati. Nei task in cui sono state effettuate le analisi si \'e fatto riferimento a tutte le misurazioni disponibili: essenzialmente, specificato un istante iniziale e uno finale, vengono collezionati tutti i record disponibili. \\L'architettura definita si articola su tre componenti principali: un \textbf{data proxy} che riceve i dati dallo streaming, un \textbf{broker} realizzato tramite Kafka sfruttando un meccanismo di tipo publisher-subscriber e infine un modulo per l'utilizzo di Spark Streaming per \textbf{l'esecuzione delle computazioni}. In Spark Streaming per ogni task si \'e utilizzato un batch interval di 30 secondi. La scelta di utilizzare un broker risulta particolarmente adatta a questo contesto in quanto permette di  estendere l'analisi ad ulteriori streaming: l'architettura del sistema \'e infatti realizzata in modo da semplificare l'integrazione con altri sorgenti di dati real-time. \'E inoltre doveroso specificare  che la scelta di svolgere analisi streaming \'e giustificata dal fatto che i dati in questione sono estremamente variabili e dinamici, come conseguenza diretta dei principali protocolli di routing dispegati sulla rete. 
+
+
+\begin{figure}[]
+\centering
+   \begin{subfigure}[b]{0.5\textwidth}
+     \includegraphics[width=1\linewidth]{figure/Hop255.png}
+     \caption{}
+     \label{fig::pathDistribution} 
+   \end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+   \includegraphics[height=5cm,width=1\linewidth]{figure/TracerouteLength.png}
+   \caption{}
+   \label{fig:standardDeviation}
+\end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+     \includegraphics[width=1\linewidth]{figure/Distribution.png}
+     \caption{}
+     \label{fig::pathDistribution} 
+   \end{subfigure}
+   \begin{subfigure}[b]{0.5\textwidth}
+     \includegraphics[width=1\linewidth]{figure/Tempi.png}
+     \caption{}
+     \label{fig::pathDistribution} 
+   \end{subfigure}
+\caption[Basic features]{Basic features of the data set. (a) Distribution of the number of distinct paths with respect to the probe-anchor pairs. (b) Distribution of the number of probe-anchor pairs with respect to the standard deviation of the number of occurrences per distinct path.}
+\label{fig:basic-features}
+\end{figure}
+\newpage
+\lstinputlisting[language=Python]{ldist.py}
+\section{Caratterizzazione della rete}
+
+
+\subsection{Distribuzione delle lunghezze dei traceroute}
+La prima delle analisi relative alla caratterizzazione della rete fa riferimento allo studio della distribuzione della lunghezza dei traceroute e al calcolo della lunghezza media. Nel calcolo del risultato tuttavia \'e stato deciso di ignorare i traceroute che non raggiungono la destinazione. Il task si presta abbastanza bene sia per le analisi batch che streaming e per questo tipo di analisi sono state prese in considerazione un sottoinsieme delle misurazioni ATLAS, denominate anchoring measurement ipV4,  nell'intervallo di tempo che va dalle 08:00  del 6 Giugno  alle 08:00 del 7 Giugno(UTC +1).\\ L'operazione di MapReduce \'e articolata come segue:
+\begin{enumerate}
+\item Nella fase di \textit{MAP} i traceroute sotto forma di JSON  sono ricevuti in input e vengono trasformati in record del tipo \textit{lunghezza traceroute-1}
+\item Nella fase di \textit{REDUCE} i record sono aggregati restituendo la distribuzione nella forma richiesta.
+\end{enumerate}
+
+Dall'analisi \'e emerso che la lunghezza media di un traceroute \'e di $12,11$ e  che solo il $5\%$ dei traceroute non raggiunge la destinazione. \footnote{Vengono considerati come traceroute che non raggiungono la destinazione anche quelli che hanno come valore dell'ultimo hop 255: in alcuni casi si tratta di anomalie dovute alla presenza di lunghe sequenze di asterischi, che non necessariamente non arrivano a destinazione. Essendo per\'o casi particolari e avendo scelto di seguire un approccio conservativo tali record non sono presi in considerazione nelle analisi.} In Fig.2 sono mostrati i risultati ottenuti e i tempi di esecuzione in locale e su cluster: per l'esecuzione in locale ci si \'e limitati ad un'esecuzione su un file di dimensione inferiore ai $4$ GB, poich\'e le prestazioni degradavano velocemente all'aumentare della dimensione dell'input. 
+Nel listato \textit{ldist.py} sono mostrate alcune righe del codice del task in questione. La funzione \textbf{updateTotalCount} ha lo scopo di mantenere uno stato globale, aggiornato dopo ogni batch interval.
+\subsection{Evoluzione degli ip univoci conosciuti}
+La seconda analisi svolta \'e incentrata sullo studio dell'andamento della quantit\'a di indirizzi ip conosciuti. Infatti, sebbene i protocolli di routing siano soggetti a politiche  di load balancing ecc., la quantit\'a di indirizzi ip presenti in un insieme sufficientemente grande di traceroute \'e pi\'u o meno stabile nel tempo. Questo vuol dire che se si osserva la rete dal punto di vista dei cammini attraversati in una prima fase verranno scoperti la maggior parte dei nodi. L'analisi si presta particolarmente bene ad un'analisi streaming, consentendo di individuare picchi nell'evoluzione temporale. Non \'e sbagliato infatti considerare il processo in termini di un costante aggiornamento di una mappa del tipo \textbf{indirizzo ip, conta}, in cui vengono aggiunti con valore $1$ 
+
+%´'´`΄՛՝‘‛
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The bibliography is stored in an external database file
+% in the BibTeX format (file_name.bib).  The bibliography is
+% created by the following command and it will appear in this
+% position in the document. You may, of course, create your
+% own bibliography by using thebibliography environment as in
+%
+% \begin{thebibliography}{12}
+% ...
+% \bibitem{itemreference} D. E. Knudsen.
+% {\em 1966 World Bnus Almanac.}
+% {Permafrost Press, Novosibirsk.}
+% ...
+% \end{thebibliography}
+
+% Here's where you specify the bibliography style file.
+% The full file name for the bibliography style file 
+% used for an ASME paper is asmems4.bst.
+
+
+
+\end{document}
