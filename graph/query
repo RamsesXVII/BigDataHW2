@@ -14,3 +14,10 @@ Degree in/out>2
 MATCH (n)
 WHERE size((n)-->()) > 2 AND size((n)<--()) > 2
 RETURN count(n)
+
+Betweenness 
+ MATCH p=allShortestPaths((source:ipNode)-[:p*]-(target:ipNode))  
+ WHERE id(source) < id(target) and length(p) > 1  
+ UNWIND nodes(p)[1..-1] as n  
+ RETURN n.ipAddress, count(*) as betweenness  
+ ORDER BY betweenness DESC  
