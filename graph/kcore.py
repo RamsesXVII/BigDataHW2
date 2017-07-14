@@ -5,13 +5,13 @@ driver = GraphDatabase.driver("bolt://localhost", auth=basic_auth("neo4j", "****
 session = driver.session()
 
 while True:
-    queryToDelete="match (n:ipNode)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 detach delete (n)"
+    queryToDelete="match (n:p)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 detach delete (n)"
     session.run(queryToDelete)
 
     queryToDeleteONode="match(n) where not (n)-[]-() delete n"
     session.run(queryToDeleteONode)
 
-    queryToCount="match (n:ipNode)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 return count(n) as count"
+    queryToCount="match (n:p)-[r:precede]-(m:ipNode) with n, count(r) as DegreeScore where DegreeScore<9 return count(n) as count"
     results = session.run(queryToCount)
 
     for record in results:
