@@ -45,14 +45,14 @@
 %% The default is oneside, onecolumn, 10pt, final
 
 
-\title{Implementazione di Lector usando YAGO come KG di riferimento}
+\title{Network behavior and topology analysis}
 
 %%% second author
 %%% remove the following entry for single author papers
 %%% add more entries for additional authors
-\author{Mattia Iodice
+\author{Valerio Gregori
     \affiliation{ 
-        Email: mat.iodice1@stud.uniroma3.it
+        Email: val.gregori2@stud.uniroma3.it
     }
 }
 
@@ -69,10 +69,8 @@
 %%% second author
 %%% remove the following entry for single author papers
 %%% add more entries for additional authors
-\author{Mattia Iodice
-    \affiliation{ 
-        Email: mat.iodice1@stud.uniroma3.it
-    }
+\author{Big Data 2016/2017, Homework 2
+
 }
 
 \usepackage{listings}
@@ -118,7 +116,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-{\it  Nella relazione  viene presentata una serie di analisi svolte sui dati pubblici RIPE Atlas. In particolare, sono mostrate sia analisi batch che streaming, sfruttando alcune tra le principali tecnologie disponibili: Spark Streaming, Apache Kafka, Neo4j, Spark, Hive e Redis. Il documento \'e strutturato in sezioni, ciascuna focalizzata su un task diverso e correlata da una discussione ad alto livello della relativa implementazione. Viene inoltre fornito, dove possibile, un confronto dei tempi di esecuzione per le diverse tecnologie. Su cluster la configurazione scelta \'e, mentre il locale  }
+{\it  Nella relazione  viene presentata una serie di analisi svolte sui dati pubblici RIPE Atlas. In particolare, sono mostrate sia analisi batch che streaming, sfruttando alcune tra le principali tecnologie disponibili: Spark Streaming, Apache Kafka, Neo4j, Hadoop e Redis. Il documento \'e strutturato in sezioni, ciascuna focalizzata su un task diverso e correlata da una discussione ad alto livello della relativa implementazione. Viene inoltre fornito, dove possibile, un confronto dei tempi di esecuzione per le diverse tecnologie. Su cluster la configurazione scelta \'e m3.xlarge con 4 nodi, mentre il locale i7 di 7a generazione, con 4 core allocati, SSD e 8 GB di RAM.}
 \end{abstract}
 
 
@@ -136,7 +134,7 @@ Alcuni dati relativi alla copertura ATLAS:\footnote{Dati relativi al 14 Luglio 2
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure} 
-\centerline{\psfig{figure=figure/yago-graph.png,width=3.04in}}
+\centerline{\psfig{figure=figure/yago-graph.png,width=2.94in}}
 \caption{Distribuzione delle sonde ATLAS.}
 \label{fig_example11.ps}
 \end{figure}
@@ -145,7 +143,7 @@ Alcuni dati relativi alla copertura ATLAS:\footnote{Dati relativi al 14 Luglio 2
 
 Le analisi effettuate e presentate fanno riferimento ai dati relativi ai traceroute ipV4, sia a livello batch che streaming. Gli obiettivi prefissati fanno riferimento per lo pi\'u  alla \textbf{caratterizzazione della rete} coperta dall'infrastruttura ATLAS, alla \textbf{ricerca  di anomalie} e alla definizione di possibili approcci per il \textbf{troubleshooting}. 
 Il documento \'e quindi diviso in Sezioni, ciascuna relativa a uno dei 3 aspetti appena descritti.
-Per la parte di caratterizzazione della rete si\'e effettuata un'indagine su alcune caratteristiche fondamentali e strutturali di Internet dedotte, ad esempio, dalla sequenza di hop di ciascun traceroute. \\ Nello studiare le anomalie della rete si sono invece ricercate irregolarit\'a nelle sequenze temporali associate a ciascun traceroute, analizzando inoltre incongruenze nella presenza degli indirizzi ip associati a ciascun hop. La parte finale del lavoro ha  visto la definizione di una tecnica potenzialmente utile al troubleshooting in presenza di outage e validata sul blockout di Amsterdam di Gennaio 2015. \\L'elenco completo dei task \'e il seguente:
+Per la parte di caratterizzazione della rete si \'e effettuata un'indagine su alcune caratteristiche fondamentali e strutturali di Internet dedotte, ad esempio, dalla sequenza di hop di ciascun traceroute. Nello studiare le anomalie della rete si sono invece ricercate irregolarit\'a nelle sequenze temporali associate a ciascun traceroute, analizzando inoltre incongruenze nella presenza degli indirizzi ip associati a ciascun hop. La parte finale del lavoro ha  visto la definizione di una tecnica potenzialmente utile al troubleshooting in presenza di outage e validata sul blackout di Amsterdam di Gennaio 2015. \\L'elenco completo dei task \'e il seguente:
 \begin{enumerate}
 \item Qual \'e la distribuzione della lunghezza dei traceroute?
 \item Qual \'e l'evoluzione della quantit\'a di indirizzi ip univoci conosciuti?
@@ -158,11 +156,11 @@ Per la parte di caratterizzazione della rete si\'e effettuata un'indagine su alc
 
 \end{enumerate}
 
-Per ciascuno dei task  si \'e innanzitutto realizzata un'implementazione su Hadoop per identificare il processamento pi\'u opportuno dei dati. Come strumento di supporto, dove \'e necessario, si \'e fatto uso di Redis. Per questo, nella sezione finale, viene presentata un'analisi dei tempi d'esecuzione richiesti per le principali operazioni richieste.
+Per ciascuno dei task  si \'e innanzitutto realizzata un'implementazione su \textbf{Hadoop} per identificare il processamento pi\'u opportuno dei dati, passando poi, dove possibile, ad un'analisi streaming tramite \textbf{Kafka} e \textbf{Spark Streaming}. Alcuni dei task invece sono stati realizzati tramite l'utilizzo di \textbf{Neo4j}, in quanto la struttura di Internet a livello dei traceroute \'e identificabile con un grafo. Come strumento di supporto, dove \'e necessario, si \'e fatto uso di \textbf{Redis}. Per questo, nella sezione finale, viene presentata un'analisi dei tempi d'esecuzione richiesti per le principali operazioni richieste.
 
 \section{Architetttura di riferimento per le analisi streaming}
 
-L'API fornita per l'accesso allo streaming \'e Cousteau\footnote{https://github.com/RIPE-NCC/ripe-atlas-cousteau}. Tramite essa \'e quindi possibile specificare le misurazioni di interesse e ricevere i relativi risultati. Nei task in cui sono state effettuate le analisi si \'e fatto riferimento a tutte le misurazioni disponibili: essenzialmente, specificato un istante iniziale e uno finale, vengono collezionati tutti i record disponibili. \\L'architettura definita si articola su tre componenti principali: un \textbf{data proxy} che riceve i dati dallo streaming, un \textbf{broker} realizzato tramite Kafka sfruttando un meccanismo di tipo publisher-subscriber e infine un modulo per l'utilizzo di Spark Streaming per \textbf{l'esecuzione delle computazioni}. In Spark Streaming per ogni task si \'e utilizzato un batch interval di 30 secondi. La scelta di utilizzare un broker risulta particolarmente adatta a questo contesto in quanto permette di  estendere l'analisi ad ulteriori streaming: l'architettura del sistema \'e infatti realizzata in modo da semplificare l'integrazione con altri sorgenti di dati real-time. \'E inoltre doveroso specificare  che la scelta di svolgere analisi streaming \'e giustificata dal fatto che i dati in questione sono estremamente variabili e dinamici, come conseguenza diretta dei principali protocolli di routing dispegati sulla rete. 
+L'API fornita per l'accesso allo streaming \'e Cousteau\footnote{https://github.com/RIPE-NCC/ripe-atlas-cousteau}. Tramite essa \'e quindi possibile specificare le misurazioni di interesse e ricevere i relativi risultati. Nei task in cui sono state effettuate le analisi si \'e fatto riferimento a tutte le misurazioni disponibili: essenzialmente, specificato un istante iniziale e uno finale, vengono collezionati tutti i record disponibili. \\L'architettura definita si articola su tre componenti principali: un \textbf{data proxy} che riceve i dati dallo streaming, un \textbf{broker} realizzato tramite Kafka sfruttando un meccanismo di tipo publisher-subscriber e infine un modulo per l'utilizzo di Spark Streaming per \textbf{l'esecuzione delle computazioni}. In Spark Streaming per ogni task si \'e utilizzato un batch interval di 30 secondi. La scelta di utilizzare un broker risulta particolarmente adatta a questo contesto in quanto permette di  estendere l'analisi ad ulteriori streaming: l'architettura del sistema \'e infatti realizzata in modo da semplificare l'integrazione con altri sorgenti di dati real-time.\\ \'E inoltre doveroso specificare  che la scelta di svolgere analisi streaming \'e giustificata dal fatto che i dati in questione sono estremamente variabili e dinamici, come conseguenza diretta dei principali protocolli di routing dispegati sulla rete. In questo modo \'e quindi possibile apprezzare in tempo reale eventi di rete di interesse, senza dover affrontare ulteriori difficolt\'a legate, ad esempio, allo storage dei dati. 
 
 
 \begin{figure}[]
@@ -189,7 +187,7 @@ L'API fornita per l'accesso allo streaming \'e Cousteau\footnote{https://github.
      \caption{}
      \label{fig::pathDistribution} 
    \end{subfigure}
-\caption[Basic features]{Basic features of the data set. (a) Distribution of the number of distinct paths with respect to the probe-anchor pairs. (b) Distribution of the number of probe-anchor pairs with respect to the standard deviation of the number of occurrences per distinct path.}
+\caption[Basic features]{Analisi sulla distribuzione delle lunghezze (a) Distribuzione dei traceroute che non raggiungo la destinazione (b,c) Distribizione del numero di traceroute rispetto alla lunghezza (d) Tempi di esecuzione in locale e su cluster.}
 \label{fig:basic-features}
 \end{figure}
 \newpage
@@ -201,13 +199,243 @@ L'API fornita per l'accesso allo streaming \'e Cousteau\footnote{https://github.
 La prima delle analisi relative alla caratterizzazione della rete fa riferimento allo studio della distribuzione della lunghezza dei traceroute e al calcolo della lunghezza media. Nel calcolo del risultato tuttavia \'e stato deciso di ignorare i traceroute che non raggiungono la destinazione. Il task si presta abbastanza bene sia per le analisi batch che streaming e per questo tipo di analisi sono state prese in considerazione un sottoinsieme delle misurazioni ATLAS, denominate anchoring measurement ipV4,  nell'intervallo di tempo che va dalle 08:00  del 6 Giugno  alle 08:00 del 7 Giugno(UTC +1).\\ L'operazione di MapReduce \'e articolata come segue:
 \begin{enumerate}
 \item Nella fase di \textit{MAP} i traceroute sotto forma di JSON  sono ricevuti in input e vengono trasformati in record del tipo \textit{lunghezza traceroute-1}
-\item Nella fase di \textit{REDUCE} i record sono aggregati restituendo la distribuzione nella forma richiesta.
+
+\item Nella fase di \textit{REDUCE} i record sono \lstinputlisting[language=Python]{knownIPs.py}
+ aggregati restituendo la distribuzione nella forma richiesta.
 \end{enumerate}
 
 Dall'analisi \'e emerso che la lunghezza media di un traceroute \'e di $12,11$ e  che solo il $5\%$ dei traceroute non raggiunge la destinazione. \footnote{Vengono considerati come traceroute che non raggiungono la destinazione anche quelli che hanno come valore dell'ultimo hop 255: in alcuni casi si tratta di anomalie dovute alla presenza di lunghe sequenze di asterischi, che non necessariamente non arrivano a destinazione. Essendo per\'o casi particolari e avendo scelto di seguire un approccio conservativo tali record non sono presi in considerazione nelle analisi.} In Fig.2 sono mostrati i risultati ottenuti e i tempi di esecuzione in locale e su cluster: per l'esecuzione in locale ci si \'e limitati ad un'esecuzione su un file di dimensione inferiore ai $4$ GB, poich\'e le prestazioni degradavano velocemente all'aumentare della dimensione dell'input. 
 Nel listato \textit{ldist.py} sono mostrate alcune righe del codice del task in questione. La funzione \textbf{updateTotalCount} ha lo scopo di mantenere uno stato globale, aggiornato dopo ogni batch interval.
+
 \subsection{Evoluzione degli ip univoci conosciuti}
-La seconda analisi svolta \'e incentrata sullo studio dell'andamento della quantit\'a di indirizzi ip conosciuti. Infatti, sebbene i protocolli di routing siano soggetti a politiche  di load balancing ecc., la quantit\'a di indirizzi ip presenti in un insieme sufficientemente grande di traceroute \'e pi\'u o meno stabile nel tempo. Questo vuol dire che se si osserva la rete dal punto di vista dei cammini attraversati in una prima fase verranno scoperti la maggior parte dei nodi. L'analisi si presta particolarmente bene ad un'analisi streaming, consentendo di individuare picchi nell'evoluzione temporale. Non \'e sbagliato infatti considerare il processo in termini di un costante aggiornamento di una mappa del tipo \textbf{indirizzo ip, conta}, in cui vengono aggiunti con valore $1$ 
+La seconda analisi svolta \'e incentrata sullo studio dell'andamento della quantit\'a di indirizzi ip conosciuti. Infatti, sebbene i protocolli di routing siano soggetti a politiche  di load balancing ecc., la quantit\'a di indirizzi ip presenti in un insieme sufficientemente grande di traceroute \'e pi\'u o meno stabile nel tempo. Questo vuol dire che se si osserva la rete dal punto di vista dei cammini attraversati in una prima fase verranno scoperti la maggior parte dei nodi. L'analisi si presta particolarmente bene ad un'analisi streaming, consentendo di individuare picchi nell'evoluzione temporale.\\ Non \'e sbagliato infatti considerare il processo in termini di un costante aggiornamento di una mappa del tipo \textbf{indirizzo ip, conta}, in cui vengono aggiunti con valore $1$ i nuovi indirizzi. Il delta relativo alla dimensione della mappa tra due intervalli di tempo successivi corrisponde quindi al numero di nuovi indirizzi ip scoperti. 
+\begin{figure}[]
+\centering
+   \begin{subfigure}[b]{0.5\textwidth}
+     \includegraphics[width=1\linewidth]{figure/IPCount.png}
+     \caption{}
+     \label{fig::pathDistribution} 
+   \end{subfigure}
+
+\begin{subfigure}[b]{0.5\textwidth}
+   \includegraphics[height=5cm,width=1\linewidth]{figure/IPCountZoom.png}
+   \caption{}
+   \label{fig:standardDeviation}
+\end{subfigure}
+\caption[ev]{Evoluzione nel tempo della quantita' di ip univoci conosciuti (a) La curca \'e di tipo long-tail: dopo circa 10 minuti di osservazione si ha a disposizione il maggior numero di indirizzi (b) Incremento anomalo di ip conosciuti.}
+\label{fig:basic-features}
+\end{figure}
+\\In Fig. 3 \'e mostrato l'andamento della quantit\'a di indirizzi ip scoperti, con un interessante zoom in Fig.3 (b) in cui si assiste ad un consiste aumento degli indirizzi ip conosciuti. Questo fenomeno potrebbe essere dovuto a eventi di rete di interesse come, ad esempio, a improvvise variazioni delle politiche di routing.
+
+
+\begin{figure} 
+\centerline{\psfig{figure=figure/StabilityTime.png,width=2.94in}}
+\caption{I tempi di esecuzione all'aumentare dell'input, in locale e su cluster per quello che riguarda la fase 1 della caratterizzazione della stabilit\'a.}
+\label{fig_example11.ps}
+\end{figure}
+
+
+\subsection{Stabilit\'a delle coppie source-target ed evoluzione della distribuzione del numero di stati tra due punti}
+Data una coppia source-target e un'insieme di traceroute eseguti \'e interessante studiare e caratterizzare le variazioni di path che si manifestano. Per ciascuna coppia quindi \'e quindi di interesse avere a disposizione l'insieme di variazioni che si verificano nel tempo, con eventuali informazioni aggiuntive sulla posizione della variazione all'interno del path.\\Per questo task si \'e quindi utilizzato un approccio combinato di Hadoop:
+\begin{enumerate}
+\item in una prima fase, utile per individuare le variazioni dei path per una determinata coppia, sono state implementate map e reduce al fine di avere in output un elenco del tipo \textit{tracerouteID, variazione}.
+\item nella seconda fase si \'e effettuata una conta del numero di stati diversi osservati per ciascuna  coppia source-destination.
+\end{enumerate}
+L'analisi di questi due aspetti diversi consente di analizzare a fondo quanto il routing \'e stabile, dove sono localizzati i load balancer e l'influenza di eventi di rete. In modo particolare, risulta che il numero di stati diversi osservati tra due punti pu\'o essere decisamente variabile, anche in assenza di significativi evevnti. I tempi di esecuzione all'aumentare della dimensione dell'input per la fase 1 sono riportati in Fig.4.
+
+\subsection{Analisi del grafo di internet}
+
+\begin{figure}[]
+\centering
+   \begin{subfigure}[]{0.5\textwidth}
+     \includegraphics[width=0.8\linewidth]{figure/indice.png}
+     \caption{}
+     \label{fig::pathDistribution} 
+   \end{subfigure}
+
+\begin{subfigure}[]{0.5\textwidth}
+   \includegraphics[width=1\linewidth]{figure/nodi.png}
+   \caption{}
+   \label{fig:standardDeviation}
+\end{subfigure}
+
+\begin{subfigure}[]{0.5\textwidth}
+   \includegraphics[width=1\linewidth]{figure/rela.png}
+   \caption{}
+   \label{fig:standardDeviation}
+\end{subfigure}
+\begin{subfigure}[]{0.5\textwidth}
+   \includegraphics[width=1\linewidth]{figure/neo4jtimes.png}
+   \caption{}
+   \label{fig:standardDeviation}
+\end{subfigure}
+\caption[Basic features]{Query e tempi di esecuzione su Neo4J (a) Creazione di un indice sul valore dell'indirizzo ip. (b,c) Caricamento dei nodi e delle relazioni dai file csv. (d) Andamento dei tempi di esecuzione all'aumentare dei nodi da inserire.}
+\label{fig:basic-features}
+\end{figure}
+La struttura di un traceroute \'e rappresentabile come una sequenza di nodi collegati da archi. Questo tipo di correlazione permette quindi di costruire il grafo relativo alla porzione di Internet visibile e di effettuare  ulteriore  analisi da un altro punto di vista. Per questo tipo di analisi si \'e quindi deciso di utilizzare un \textit{Graph DBMS}, \textbf{Neo4j}, in cui inserire le sequenze  di nodi e archi relativi a ciascun traceroute.\\I dati inseriti nel grafo fanno riferimento alla finestra temporale tra le 17:00 e le 18:00 del 6 Giugno. Poich\'e sono disponibili molte coppie source target diverse e ciascuna di tali coppie ha la propria frequenza di misurazione si \'e scelto di prendere l'ultimo traceroute disponibile nei 60 minuti dell'osservazione.\\ Tale scelta \'e giustificata dal fatto che mantenere l'informazione relativa a pi\'u traceroute per una stessa coppia di punti avrebbe comportato l'inserimento di informazioni potenzialmente errate nel grafo. \\Al termine dell'inserimento risulta che sono presenti:
+\begin{enumerate}
+\item $117191$ nodi univoci 
+\item $288066$ relazioni
+\end{enumerate}
+\begin{table}[]
+\begin{center}
+\label{table_ASME}
+\begin{tabular}{c l l}
+& & \\ % put some space after the caption
+\hline
+grado in/out & \# nodi & \# ms \\
+\hline
+1 & 29709 & \ 3287 \\
+2  & 14660 & \ 2848 \\
+3  & 8851 & \  2936  \\
+
+\hline
+\end{tabular}
+\end{center}
+\caption{Conta dei nodi con grado di ingresso e di uscita maggiore del valore specificato e tempi di esecuzione associati.}
+\end{table}
+L'inserimento dei dati \'e avvenuto tramite le due query riportate in Fig.5 (a,b,c). \\I file \textit{.csv} in input sono stati costruiti a partire dallo streaming, andando ad inserire nel primo solo gli indirizzi ip univoci, mentre nel secondo le coppie di indirizzi collegati da un arco (ovvero quelli consecutivi nel traceroute). \\Tale scelta \'e dettata dalla presenza di diverse anomalie che possono verificarsi nel traceroute, alcune delle quali riportate nelle Sezioni successive: in particolare sono esclusi dall'inserimento tutti gli hop in cui compaiono asterischi e quelli che hanno diversi indirizzi ip per ciascuna serie di \textit{echo reply}. \\ \'E stato interessante analizzare l'andamento dei tempi di esecuzione necessari all'inserimento dei dati (aggiungendo nodi fittizi). I risultati sono mostrati in Fig.5 (d).
+
+\subsection{Conta dei nodi con gradi di ingresso e di uscita maggiore di uno}
+Un aspetto rilevante del grafo in questione \'e la conta dei nodi con grado di ingresso e di uscita maggiore di $1$. Questa caratteristica si traduce in qualche modo con l'idea del numero di cammini sovrapposti del grafo e risulta quindi particolarmente utile quando si vogliono caratterizzare eventi di rete che hanno un grande impatto. \\ In Neo4j, sfruttando il linguaggio \textit{Cypher} l'operazione \'e abbastanza semplice da specificare:\\  \textbf{match (n) where\\ size((n)-->())>1 and\\ size((n)<--())>1\\ return count(n)} \\I risultati sono riportati in Tab.1 con i tempi di esecuzione per ciascun grado specificato. Quello che emerge \'e che si tratta di un grafo denso.
+
+\begin{table}[]
+\caption{I 5 nodi del grafo con grado maggiore.}
+\begin{center}
+\label{table_ASME}
+\begin{tabular}{c l l}
+& & \\ % put some space after the caption
+\hline
+Indirizzo ip & grado  \\
+\hline
+8.8.8.8	& 714\\
+80.81.194.42 & 367\\
+80.81.192.245 &	357\\
+199.7.83.42	& 338\\
+193.0.14.129 & 335\\
+
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+\subsection{Ricerca dei 100 nodi di grado maggiore}
+Un secondo task di interesse \'e stato quello di individuare i 100 nodi di grado maggiore. Tale operazione\'e stata possibile tramite l'esecuzione della seguente query:\\\textbf{match (n:ipNode)-[r:precede]-(m:ipNode)\\ return n.ipAddress, count(r) as DegreeScore\\ order by DegreeScore desc limit 100}\\ L'esecuzione della query ha richiesto $11467 ms$ ed \'e stato interessante notare come le prime posizioni sono occupate da ip relativi ad \textit{Internet exhange point} o a indirizzi noti come, ad esempio, i \textit{DNS di Google}.
+
+\subsection{Coreness}
+\lstinputlisting[language=Python]{coreness.py}
+
+Nella visualizzazione di grafi molto grandi spesso si adottano tecniche di filtraggio, una delle quali \'e la coreness. Si tratta di un meccanismo che, specificato un numero intero $k$, elimina ricorsivamente tutti i nodi che hanno grado minore di $k$.  Ad ogni iterazione i nodi eliminati vanno quindi ad abbassare il grado dei nodi a cui erano collegati, restituendo in output il sottografo pi\'u denso presente in quello iniziale.\\ Tale processo, oltre a consentire una visualizzazione migliore, risulta particolarmente utile quando si vogliono individuare i nodi centrali di un grafo. Alternative come il calcolo della betweenness, ad esempio, sono pressocch\'e impossibili, richiedendo spesso un costo computazionale di almeno $O(n^3)$. Nel listato \textit{coreness.py} viene riportato lo script Python utilizzato per la generazione del 10-core, mentre in Tab.3 sono riportati i dati e i tempi di esecuzione necessari pere la generazione dei vari k-core.
+\begin{table}[]
+\caption{Informazioni per i vari k-core generati: il k usato, il numero di nodi del sottografo,il numero di archi e i ms necessari per la computazione.}
+\begin{center}
+\label{table_ASME}
+\begin{tabular}{c l l l}
+& & \\ % put some space after the caption
+\hline
+K-core & \#nodi & \# archi & ms  \\
+\hline
+5	& 18K & 116K & 14620\\
+10 & - & - & 12810\\
+15   & - &  - & 9505\\
+20 & 197 &  2.7K  & 9140\\
+21   & - & - & 7610\\
+
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+\\Nelle appendici sono riportati i grafi per i k-core 15,20 e 21.
+\begin{figure} 
+\centerline{\psfig{figure=figure/BigRTTtime.png,width=2.94in}}
+\caption{L'andamento dei costi di esecuzione all'aumentare dell'input per il task legato ai picchi nella sequenzza di RTT.}
+\label{fig_example11.ps}
+\end{figure}
+\section{Ricerca di anomalie}
+\subsection{Picchi nella sequenza di RTT}
+Ad ogni traceroute sono associati i \textbf{round trip time} relativi ad ogni echo reply. Una delle anomalie che spesso si verificano \'e che nella sequenza dei rtt compaiono dei picchi. Un esempio potrebbe essere il seguente:
+\begin{enumerate}
+\item hop 1 (1.1 - 1.8 - 1.3)
+\item hop 2 (2.2 - 2.2 - 2.7)
+\item hop 3 (5.2 - 5.4 - 5.8)
+\item hop 4 (3.3 - 3.6 - 3.2)
+\end{enumerate}
+All'hop 3 sono associati degli RTT maggiori dell'intorno sinistro (hop 2) e dell'intorno destro (hop 4). Tale anomalia potrebbe essere, ad esempio, dovuta al fatto che il router associato all'hop 3 non sceglie la strada ottimale per inoltrare i pacchetti di risposta all' \textbf{echo request}. L'obiettivo di questo task \'e appunto quello di caratterizzare la presenza del fenomeno all'interno della rete.\\La tecnologia di riferimento scelta \'e Hadoop e l'esecuzione si sviluppa come segue:
+\begin{enumerate}
+
+\item nella fase di \textit{MAP} i record sono costruiti nella forma chiave-valore, con la chiave associata all'id del traceroute e il valore associato ad un oggetto contenente il massimo rtt dell' hop e il suo id. Nell'esempio precedente supponendo che l'id del traceroute sia relativo a \textit{ probeId ,  measurementId , endtime , destination} del traceroute in questione, si avrebbero 4 nuovi record con tale chiave e con valore hop1(1.8), hop2(2.7)...
+\item nella fase di \textit{REDUCE} la sequenza di hop viene scansionata alla ricerca di picchi nella sequenza temporale, conservano le triple associate all'anomalia. 
+\end{enumerate}
+ L'andamento dei costi di esecuzione all'aumentare dell'input sono riportati in Fig.6.\\ Il fenomeno risulta cos\'i caratterizzato:
+\begin{enumerate}
+\item sono presi in considerazione \textbf{$1.043.492$} traceroute (anchoring measurement del 6 Giugno)
+\item imponendo una soglia di 0.5 secondi (al di sotto della quale non viene considerato un comportamento anomalo) il fenomeno si manifesta in
+\textbf{$2.218.214$} casi.
+\end{enumerate}
+\subsection{Echo reply con IP differenti}
+\begin{figure}[]
+\centering
+\begin{subfigure}[]{0.5\textwidth}
+   \includegraphics[width=1\linewidth]{figure/SameHopDistribution.png}
+   \caption{}
+   \label{fig:standardDeviation1}
+\end{subfigure}
+\begin{subfigure}[]{0.5\textwidth}
+   \includegraphics[width=1\linewidth]{figure/SHtime.png}
+   \caption{}
+   \label{fig:standardDeviation2}
+\end{subfigure}
+\caption{ La distribuzione delle anomalie in termini di ip diversi per hop (a) e i tempi di esecuzione all'aumentare dell'input (b).}
+\end{figure}
+Un altro tipo di anomalia presente su questo tipo di dati \'e relativa  ai nodi che inviano le \textit{echo reply}. Spesso, infatti, principalmente in presenza di \textit{load balancer}, accade che le risposte provengono da ip diversi per un determinato hop.  Un esempio \'e il seguente:
+\begin{enumerate}
+\item hop 1 (192.168.1.1)
+\item hop 2 (80.1.0.1,80.2.0.2,72.2.1.2)
+\item hop 3 (164.124.11.2)
+\item hop 4 (100.121.10.2)
+\end{enumerate}
+Quello che accade \'e che all'hop $2$ sono associati $3$ diversi indirizzi ip, ciascuno mittente di un echo reply diverso. Per la caratterizzazione del fenomeno si \'e fatto uso di Hadoop, e l'implementazione si basa essenzialmente sull'uso di una \textbf{MAP} in cui sono individuati gli hop che presentano pi\'u indirizzi ip diversi. I tempi di esecuzione all'aumentare dell'input e la distribuzione delle anomalie sono mostrate in Fig.7. Il fenomeno risulta cos\'i caratterizzato:
+\begin{enumerate}
+\item sono presi in considerazione $1.043.492$ traceroute (anchoring measurement del 6 Giugno)
+\item in \textit{11.324} casi ci sono hop con $2$ ip diversi associati
+\item in \textit{1176} casi ci sono hop con $3$ ip diversi associati
+
+\end{enumerate}
+
+\section{Troubleshooting}
+\subsection{Outage detection}
+\begin{figure} 
+\centerline{\psfig{figure=figure/HopBloccanti.png,width=2.94in}}
+\caption{Tempi di esecuzione in locale e su cluster per il calcolo degli hop bloccanti. }
+\label{fig_example11.ps}
+\end{figure}
+Le analisi in streaming sono spesso utilizzate in processi di rilevamento di guasti, frodi o anomalie in tempo reale. \\Tra i vari task delle analisi streaming sono quindi emersi dei dettagli che hanno consentito la definizione di una tecnica per il rilevamento  di potenziali outage, in base al loro effetto sulla rete. Il meccanismo si articola in diverse fasi articolate come segue:
+\begin{enumerate}
+\item in ogni batch interval vengono individuati i traceroute che non arrivano a destinazione, scartando quelli che invece giungono correttamente al destinatario. Il controllo viene fatto confrontando il destination address con l'ultimo ip nella sequenza del traceroute.
+\item per i traceroute che non giungono a destinazione viene preso l'ultimo indirizzo ip della sequenza che risponde correttamente 
+\item viene mantenuto uno stato del tipo \textit{indirizzo ip - conta}, dove ciascun indirizzo ip \'e appunto un indirizzo che compare come ultimo nodo raggiungibile in un traceroute che non giunge a destinazione
+\item si controlla la lunghezza della mappa, verificando eventuali incrementi consistenti.
+\end{enumerate}
+
+L'assunzione che viene fatta \'e che c'\'e un certo numero di traceroute che non arriva a destinazione.\\ Questi si traducono in una mappa pi\'u o meno stabile, che al massimo varia nella conta della non raggiungibilit\'a, ma non nella sua lunghezza.\\ Come conseguenza di ci\'o eventuali eventi di rete che implicano la non raggiungibilit\'a di un nodo si manifestano sotto forma di inserimenti di nuovi record nella mappa. \\Individuate quindi queste situazioni, andando ad isolare i nuovi record, diventa dunque possibile individuare il contorno dell'outage.\\ Eventualmente diventa anche possibile risalire ai nodi non pi\'u raggiungibili, ovvero quelli coinvolti nel potenziale malfunzionamento: \'e sufficiente mantenere uno stato dell'ultimo traceroute che raggiunge la destinazione  per ogni coppia source-destination e confrontarlo con il percorso non pi\'u raggiungibile.\\Nel testare questo processo di outage-detection si \'e preso in analisi un caso limite: il blackout di Amsterdam del Gennaio 2015. Si tratta appunto di un evento di rete di impatto consistente, che infatti si manifesta in un incremento di record nella mappa dello stato.
+Per questo task \'e stata svolta anche un'analisi batch per verificare che ci fosse una componente piuttosto stabile di traceroute che non arrivano a destinazione. L'esecuzione \'e avvenuta su cluster e i tempi di esecuzione  sono riportati in Fig.8.
+\section{Strumenti di supporto}
+Nell'analisi dei dati, nell'esplorazione dei risultati e nella fase di testing si \'e fatto uso di \textbf{Redis}. La scelta \'e stata dettata da diversi fattori:
+\begin{enumerate}
+\item le strutture dati usate sono piuttosto semplici\
+\item \'e spesso richiesta la manipolazione di stringhe
+\item l'integrazione con Python \'e rapida 
+\end{enumerate}
+Si \'e anche deciso di confrontare le prestazioni di Redis con quelle di Mongo, i risultati sono mostrati in Fig.9.
+\begin{figure} 
+\centerline{\psfig{figure=figure/mongoredis.png,width=2.94in}}
+\caption{Confronto dei tempi di esecuzione tra Redis e Mongo all'aumentare dei record in input.}
+\label{fig_example11.ps}
+\end{figure}
+
+\section{Conclusioni}
+Le analisi streaming sono risultate particolarmente adatte a questo contesto. Disponendo infatti di dati in tempo reale \'e stato possibile definire meccanismi di analisi e di event-detection in modo relativamente semplice, potendo per\'o sfruttare i meccanismi di scalabilit\'a forniti da Spark Streaming. Poich\'e poi i dati in questione sono risultati particolarmente adatti per una rappresentazione a grafo \'e stato inoltre possibile sfruttare la flessibilit\'a di Neo4j per caratterizzare le propriet\'a fondamentali di Internet. Il dato che emerge \'e che l'infrastruttura ATLAS riesce a coprire un insieme molto denso di nodi e che c'\'e un certo numero di anomalie che si presenta in modo consistente. 
 
 %´'´`΄՛՝‘‛
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
