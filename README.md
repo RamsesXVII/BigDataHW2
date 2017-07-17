@@ -1,6 +1,5 @@
 # Big Data Homework 2
 
-[![N|Solid](https://www-static.ripe.net/static/rnd-ui/atlas/media/anchors/RIPE_NCC_Logo2015-256_q3prZmW.png)](https://atlas.ripe.net/)
 ### Dati
 Data used in batch analysis are anchoring measurements traceroutes running on the 13th of June in 2017. 
 Traceroute records are obtained by a script that downloads  measurements specified in input file, adding new records on tail of output file.
@@ -44,9 +43,4 @@ https://kafka.apache.org/quickstart
 https://medium.com/@kass09/spark-streaming-kafka-in-python-a-test-on-local-machine-edd47814746 (l'ultima parte è importante e non l'ho letta)
 
 
-
-### ToDo
-  - Extend the input on Built-In and UDM. 
-  - Check that ids in idFile.txt correspond to measurement running (grep is enough?)
-  - Magic
 
